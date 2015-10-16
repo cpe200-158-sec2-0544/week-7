@@ -32,7 +32,7 @@ namespace twozerofoureight
         }
         private void UpdateScore(int a)
         {
-            label1.Text = "Score = " + a;
+            lblScore.Text = "Score = " + a;
         }
         private void UpdateTile(Label l, int i)
         {
