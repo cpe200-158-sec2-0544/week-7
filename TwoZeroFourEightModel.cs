@@ -12,8 +12,11 @@ namespace twozerofoureight
         protected int[,] board;
         protected Random rand;
         protected int score = 0;
-        public int Score
-        { get { return score; } }
+        protected bool end = false;
+        public int Score()
+        {
+            return score;
+        }
 
         public TwoZeroFourEightModel() : this(4)
         {
@@ -39,20 +42,67 @@ namespace twozerofoureight
             board = Random(board);
             NotifyAll();
         }
+        public bool IsEnd()
+        {
+            int[] range = Enumerable.Range(0, boardSize).ToArray();
+            end = true;
+            foreach (int i in range)
+            {
+                foreach(int j in range)
+                {
+                    if(board[i,j]==0)
+                    {
+                        end = false;
+                        break;
+                    }
+                }
+            }
+            if (end)
+            {
+                foreach (int i in range)
+                {
+                    // check duplicate in columm
+                    foreach (int j in range)
+                    {
+                        if (j > 0 && board[j, i] != 0 && board[j, i] == board[j - 1, i])
+                        {
+                            end = false;
+                            break;
+                        }
 
+                    }
+                    if (!end) break;
+                    // check duplicate in row
+                    foreach (int j in range)
+                    {
+                        if (j > 0 && board[i, j] != 0 && board[i, j] == board[i, j - 1])
+                        {
+                            end = false;
+                            break;
+                        }
+
+                    }
+                    if (!end) break;
+                }
+            }
+            return end;
+        }
         private int[,] Random(int[,] input)
         {
-            while (true)
+            int count = 0;
+            while (true&&count<=16)
             {
                 int x = rand.Next(boardSize);
                 int y = rand.Next(boardSize);
                 if (board[x, y] == 0)
                 {
                     board[x, y] = 2;
+                    score += 2;
                     break;
                 }
+                count++;
             }
-            score += 2;
+            
             return input;
         }
 
@@ -108,7 +158,6 @@ namespace twozerofoureight
             board = Random(board);
             NotifyAll();
         }
-
         public void PerformUp()
         {
             int[] buffer;
